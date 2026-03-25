@@ -38,17 +38,30 @@ def handle_dialog(req, res):
                 "Не хочу.",
                 "Не буду.",
                 "Отстань!"
-            ]
+            ],
+            'animal': 'слона',
+            'game_round': 1
         }
         res['response']['text'] = 'Привет! Купи слона!'
         res['response']['buttons'] = get_suggests(user_id)
         return
     user_text = req['request']['original_utterance'].lower().strip()
+    animal = sessionStorage[user_id]['animal']
     if 'куплю' in user_text or 'покупаю' in user_text or any(word in user_text for word in ['ладно', 'хорошо', 'да']):
-        res['response']['text'] = 'Слона можно найти на Яндекс.Маркете!'
-        res['response']['end_session'] = True
+        if animal == 'слона':
+            sessionStorage[user_id]['animal'] = 'кролика'
+            sessionStorage[user_id]['suggests'] = [
+                "Не хочу.",
+                "Не буду.",
+                "Отстань!"
+            ]
+            res['response']['text'] = 'Слона можно найти на Яндекс.Маркете! А теперь купи кролика!'
+            res['response']['buttons'] = get_suggests(user_id)
+        else:
+            res['response']['text'] = 'Кролика можно найти на Яндекс.Маркете!'
+            res['response']['end_session'] = True
         return
-    res['response']['text'] = f"Все говорят '{req['request']['original_utterance']}', а ты купи слона!"
+    res['response']['text'] = f"Все говорят '{req['request']['original_utterance']}', а ты купи {animal}!"
     res['response']['buttons'] = get_suggests(user_id)
 
 
