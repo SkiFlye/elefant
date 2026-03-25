@@ -10,6 +10,11 @@ logging.basicConfig(
 sessionStorage = {}
 
 
+@app.route('/', methods=['GET'])
+def health_check():
+    return "OK"
+
+
 @app.route('/post', methods=['POST'])
 def main():
     logging.info(f'Получен запрос: {request.json!r}')
